@@ -1,4 +1,7 @@
 'use strict';
+import elements from './elements.json' assert { type: 'json' };
+
+const arrElements = elements.elements;
 
 function createTable(id, rowNum, colNum, rowHead = 0, colHead = 0) {
   const table = document.createElement('table');
@@ -22,4 +25,5 @@ function createTable(id, rowNum, colNum, rowHead = 0, colHead = 0) {
   table.appendChild(tableBody);
   document.body.appendChild(table);
 }
+
 createTable('periodic-table', 7, 32, 2, 1);
