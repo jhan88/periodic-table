@@ -17,6 +17,7 @@ const periodicTable = createTable(
 addPeriod(periodicTable);
 addGroup(periodicTable);
 arrElements.forEach((element) => addAtomicNum(periodicTable, element));
+arrElements.forEach((element) => addElement(element));
 
 function createTable(
   id,
@@ -133,3 +134,59 @@ function countBalanceElectronLaAc(electron_configuration_semantic) {
 
   return balanceElectron;
 }
+
+function addElement(element) {
+  const atomicNum = element.number;
+  document.querySelector(`[data-atomic-num="${atomicNum}"]`).innerHTML =
+    element.symbol;
+}
+
+// Frame Cells
+// write periods
+[...periodicTable.querySelectorAll('th')]
+  .filter((cell) => cell.dataset.column === '-1' && cell.dataset.period)
+  .forEach((cell) => (cell.textContent = cell.dataset.period));
+
+// write groups
+[...periodicTable.querySelectorAll('th')]
+  .filter((cell) => cell.dataset.row === '-1' && cell.dataset.group)
+  .forEach((cell) => (cell.textContent = cell.dataset.group));
+
+// hide unnecessary cells
+[
+  ...periodicTable.querySelectorAll('th'),
+  ...periodicTable.querySelectorAll('td'),
+]
+  .filter((cell) => cell.dataset.row < 5 && cell.dataset.fblock)
+  .forEach((cell) => cell.classList.add('cell--none'));
+
+[...periodicTable.querySelectorAll('td')]
+  .filter((cell) => !cell.dataset.atomicNum)
+  .forEach((cell) => cell.classList.add('cell--hidden'));
+
+// create style div containers for f-block element cells
+const containerFblock = document.createElement('div');
+const containerLanthanide = document.createElement('div');
+const containerActinide = document.createElement('div');
+
+containerFblock.classList.add('container__fblock');
+containerLanthanide.classList.add('container__lanthanide');
+containerActinide.classList.add('container__actinide');
+
+periodicTable.appendChild(containerFblock);
+containerFblock.appendChild(containerLanthanide);
+containerFblock.appendChild(containerActinide);
+
+// add lanthanide cells to container lanthanide
+[...periodicTable.querySelectorAll('td')]
+  .filter((cell) => cell.dataset.period == 6 && cell.dataset.fblock)
+  .forEach((cell) =>
+    document.querySelector('.container__lanthanide').appendChild(cell)
+  );
+
+// add actinide cells to container actinide
+[...periodicTable.querySelectorAll('td')]
+  .filter((cell) => cell.dataset.period == 7 && cell.dataset.fblock)
+  .forEach((cell) =>
+    document.querySelector('.container__actinide').appendChild(cell)
+  );
