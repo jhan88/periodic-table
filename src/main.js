@@ -190,3 +190,46 @@ containerFblock.appendChild(containerActinide);
   .forEach((cell) =>
     document.querySelector('.container__actinide').appendChild(cell)
   );
+
+// Color cells
+const setCategory = new Set();
+arrElements.forEach((element) => {
+  if (!element.category.startsWith('unknown')) {
+    setCategory.add(element.category);
+  }
+});
+
+const arrColorCategory = [
+  '#B1B2FF',
+  '#cccccc',
+  '#D2DAFF',
+  '#FFC7C7',
+  '#BBDED6',
+
+  '#AAC4FF',
+  '#FFB6B9',
+  '#FFFF66',
+  '#ff7c43',
+  '#ffa600',
+];
+
+function findCategory(element) {
+  if (setCategory.has(element.category)) {
+    return element.category;
+  } else {
+    return [...setCategory].filter((category) =>
+      element.category.includes(category)
+    )[0];
+  }
+}
+
+arrElements.forEach((element) => {
+  const category = findCategory(element);
+
+  const targetCell = periodicTable.querySelector(
+    `[data-atomic-num="${element.number}"]`
+  );
+
+  targetCell.style['background-color'] =
+    arrColorCategory[[...setCategory].indexOf(category)];
+});
