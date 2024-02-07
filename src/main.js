@@ -17,7 +17,6 @@ const periodicTable = createTable(
 addPeriod(periodicTable);
 addGroup(periodicTable);
 arrElements.forEach((element) => addAtomicNum(periodicTable, element));
-arrElements.forEach((element) => addElement(element));
 
 function createTable(
   id,
@@ -135,12 +134,6 @@ function countBalanceElectronLaAc(electron_configuration_semantic) {
   return balanceElectron;
 }
 
-function addElement(element) {
-  const atomicNum = element.number;
-  document.querySelector(`[data-atomic-num="${atomicNum}"]`).innerHTML =
-    element.symbol;
-}
-
 // Frame Cells
 // write periods
 [...periodicTable.querySelectorAll('th')]
@@ -233,3 +226,16 @@ arrElements.forEach((element) => {
   targetCell.style['background-color'] =
     arrColorCategory[[...setCategory].indexOf(category)];
 });
+
+arrElements.forEach((element) => fillInfo(element));
+
+function fillInfo(element) {
+  const targetCell = periodicTable.querySelector(
+    `[data-atomic-num="${element.number}"]`
+  );
+  targetCell.classList.add('cell__info');
+  targetCell.innerHTML = `
+    <span class="atomic-num">${element.number}</span>
+    <p class="symbol">${element.symbol}</p>
+  `;
+}

@@ -67,8 +67,6 @@ tr,
 th,
 td {
   margin: 0.5px;
-  text-align: center;
-  line-height: 2rem;
 }
 
 tr {
@@ -81,6 +79,8 @@ th {
   width: 2rem;
   height: 2rem;
   padding: 0;
+  line-height: 2rem;
+  text-align: center;
 }
 
 td {
@@ -112,4 +112,21 @@ tr td:nth-child(3) {
 .container__lanthanide,
 .container__actinide {
   display: flex;
+}
+
+.cell__info {
+  position: relative;
+}
+
+.atomic-num {
+  position: absolute;
+  top: 0.1rem;
+  left: 0.2rem;
+  font-size: 0.4rem;
+}
+
+.symbol {
+  text-align: center;
+  line-height: 2rem;
+  font-size: 0.9rem;
 }
