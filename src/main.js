@@ -11,7 +11,8 @@ const periodicTable = createTable(
   numPeriod,
   numGroup + numFblock,
   1,
-  1
+  1,
+  document.querySelector('.container__periodic-table')
 );
 
 addPeriod(periodicTable);
@@ -235,7 +236,40 @@ function fillInfo(element) {
   );
   targetCell.classList.add('cell__info');
   targetCell.innerHTML = `
-    <span class="atomic-num">${element.number}</span>
-    <p class="symbol">${element.symbol}</p>
+    <span class="cell__info__atom-num">${element.number}</span>
+    <p class="cell__info__symbol">${element.symbol}</p>
   `;
 }
+
+// Display element information in detail
+const sectionDisplay = document.querySelector('.container__display-info');
+
+function displayInfoDetail(element) {
+  return `
+    <ul class="list__display-info">
+      <li class="item__display-info">Name:\t\t\t${element.name}</li>
+      <li class="item__display-info">Symbol:\t\t\t${element.symbol}</li>
+      <li class="item__display-info">Atomic number:\t${element.number}</li>
+      <li class="item__display-info">Atomic mass:\t${element.atomic_mass}u</li>
+      <li class="item__display-info">Category:\t\t${element.category}</li>
+      <li class="item__display-info"><a href=${element.source} target="_blank" class="link-wikipedia">Find the wikipedia page for ${element.name}</a></li>
+    </ul>
+  `;
+}
+
+document.addEventListener('click', (event) => {
+  if (sectionDisplay.contains(event.target)) {
+    return;
+  }
+
+  const atomicNum = event.target.dataset.atomicNum;
+  const cellFocus = periodicTable.querySelector('.cell__info--active');
+  const previousDisplay = document.querySelector('.list__display-info');
+
+  cellFocus && cellFocus.classList.remove('cell__info--active');
+  previousDisplay && previousDisplay.remove();
+  if (atomicNum) {
+    event.target.classList.add('cell__info--active');
+    sectionDisplay.innerHTML = displayInfoDetail(arrElements[atomicNum - 1]);
+  }
+});

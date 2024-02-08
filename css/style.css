@@ -41,7 +41,7 @@ ul {
 
 a {
   text-decoration: none;
-  color: var(--color-text);
+  color: var(--color-black);
 }
 
 button {
@@ -54,7 +54,12 @@ button:focus {
   outline: 1px solid var(--color-accent);
 }
 
-table {
+/* Periodic Table */
+.container__periodic-table {
+  position: relative;
+}
+
+#periodic-table {
   border: hidden;
   border-spacing: 0;
   border-collapse: collapse;
@@ -108,15 +113,38 @@ tr td:nth-child(3) {
   position: relative;
 }
 
-.atomic-num {
+.cell__info--active {
+  scale: 1.2;
+  z-index: 1;
+  box-shadow: rgba(100, 100, 100, 0.5) 0px 5px 30px 0px;
+}
+
+.cell__info__atom-num {
   position: absolute;
   top: 0.1rem;
   left: 0.2rem;
   font-size: 0.8rem;
+  pointer-events: none;
 }
 
-.symbol {
+.cell__info__symbol {
   text-align: center;
   line-height: 4rem;
   font-size: 1.6rem;
+  pointer-events: none;
+}
+
+/* Display */
+.container__display-info {
+  position: absolute;
+  top: 4.1rem;
+  left: 50%;
+  width: 500px;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.item__display-info {
+  white-space: pre;
+  margin: 0.5rem;
 }
