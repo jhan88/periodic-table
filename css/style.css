@@ -111,6 +111,7 @@ tr td:nth-child(3) {
 
 .cell__info {
   position: relative;
+  transition: all 100ms ease;
 }
 
 .cell__info--active {
@@ -146,4 +147,16 @@ tr td:nth-child(3) {
 .item__display-info {
   white-space: pre;
   margin: 0.5rem;
+}
+
+/* Filter */
+.container__filter {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.category--inactive {
+  opacity: 0.3;
+  color: var(--color-white);
+  pointer-events: none;
 }

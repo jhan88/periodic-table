@@ -273,3 +273,51 @@ document.addEventListener('click', (event) => {
     sectionDisplay.innerHTML = displayInfoDetail(arrElements[atomicNum - 1]);
   }
 });
+
+// Add category filter
+const filterContainer = document.querySelector('.container__filter');
+
+const buttonReset = document.createElement('button');
+buttonReset.classList.add('button__reset');
+buttonReset.innerHTML = 'RESET FILTERS';
+filterContainer.appendChild(buttonReset);
+
+buttonReset.addEventListener('click', () => {
+  const cardInactive = document.querySelectorAll('.card--inactive');
+  cardInactive &&
+    [...cardInactive].forEach((card) =>
+      card.classList.remove('card--inactive')
+    );
+});
+
+const filterCategory = document.createElement('div');
+filterCategory.classList.add('container__filter__category');
+filterContainer.appendChild(filterCategory);
+
+[...setCategory].forEach((category) => {
+  const buttonCategory = document.createElement('button');
+  buttonCategory.classList.add('button__category');
+  buttonCategory.setAttribute(
+    'data-category',
+    `${category.replaceAll(' ', '-')}`
+  );
+  buttonCategory.innerHTML = category;
+  filterCategory.appendChild(buttonCategory);
+  buttonCategory.style['background-color'] =
+    arrColorCategory[[...setCategory].indexOf(category)];
+});
+
+document.addEventListener('click', (event) => {
+  const selectedCategory = event.target.dataset.category;
+  if (selectedCategory) {
+    arrElements.forEach((element) => {
+      findCategory(element).replaceAll(' ', '-') === selectedCategory
+        ? document
+            .querySelector(`.atomic-num-${element.number}`)
+            .classList.remove('category--inactive')
+        : document
+            .querySelector(`.atomic-num-${element.number}`)
+            .classList.add('category--inactive');
+    });
+  }
+});
