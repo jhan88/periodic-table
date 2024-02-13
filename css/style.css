@@ -149,14 +149,31 @@ tr td:nth-child(3) {
   margin: 0.5rem;
 }
 
-/* Filter */
+/* Category Filter */
 .container__filter {
   text-align: center;
   margin: 1rem 0;
 }
 
-.category--inactive {
+.cell--inactive {
   opacity: 0.3;
   color: var(--color-white);
   pointer-events: none;
+}
+
+/* Phase Filter */
+.phase--solid {
+  border: 3px solid var(--color-black);
+}
+
+.phase--liquid {
+  border: 3px solid var(--color-blue);
+}
+
+.phase--gas {
+  border: 3px solid var(--color-orange);
+}
+
+.phase--unknown {
+  border: 3px dotted var(--color-gray);
 }

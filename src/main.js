@@ -283,11 +283,24 @@ buttonReset.innerHTML = 'RESET FILTERS';
 filterContainer.appendChild(buttonReset);
 
 buttonReset.addEventListener('click', () => {
-  const cardInactive = document.querySelectorAll('.card--inactive');
-  cardInactive &&
-    [...cardInactive].forEach((card) =>
-      card.classList.remove('card--inactive')
+  const cellInactive = document.querySelectorAll('.cell--inactive');
+  cellInactive &&
+    [...cellInactive].forEach((cell) =>
+      cell.classList.remove('cell--inactive')
     );
+
+  const cellPhase = [
+    ...document.querySelectorAll('.phase--solid'),
+    ...document.querySelectorAll('.phase--liquid'),
+    ...document.querySelectorAll('.phase--gas'),
+    ...document.querySelectorAll('.phase--unknown'),
+  ].filter((element) => element.tagName === 'TD');
+  cellPhase.forEach((cell) => {
+    cell.classList.remove('phase--solid');
+    cell.classList.remove('phase--liquid');
+    cell.classList.remove('phase--gas');
+    cell.classList.remove('phase--unknown');
+  });
 });
 
 const filterCategory = document.createElement('div');
@@ -314,10 +327,67 @@ document.addEventListener('click', (event) => {
       findCategory(element).replaceAll(' ', '-') === selectedCategory
         ? document
             .querySelector(`.atomic-num-${element.number}`)
-            .classList.remove('category--inactive')
+            .classList.remove('cell--inactive')
         : document
             .querySelector(`.atomic-num-${element.number}`)
-            .classList.add('category--inactive');
+            .classList.add('cell--inactive');
+    });
+  }
+});
+
+// Add phase filter
+const setPhase = new Set(['solid', 'liquid', 'gas', 'unknown']);
+
+console.log(arrElements.filter((element) => element.melt === null));
+console.log(arrElements.filter((element) => element.boil === null));
+console.log(
+  arrElements.filter(
+    (element) => element.boil === null && element.melt === null
+  )
+);
+
+const filterPhase = document.createElement('div');
+filterPhase.classList.add('container__filter__phase');
+filterContainer.appendChild(filterPhase);
+
+[...setPhase].forEach((phase) => {
+  const buttonPhase = document.createElement('button');
+  buttonPhase.classList.add('button__phase');
+  buttonPhase.innerHTML = phase;
+  filterPhase.appendChild(buttonPhase);
+  buttonPhase.setAttribute('data-phase', phase);
+  buttonPhase.classList.add(`phase--${phase}`);
+});
+
+let tempKelvin = 300; //get temperature from use input
+
+function determinePhase(element, tempKelvin) {
+  if (element.melt && tempKelvin <= element.melt) {
+    return 'solid';
+  } else if (element.boil && tempKelvin <= element.boil) {
+    return 'liquid';
+  } else if (element.boil && tempKelvin > element.boil) {
+    return 'gas';
+  } else {
+    return 'unknown';
+  }
+}
+
+document.addEventListener('click', (event) => {
+  const selectedPhase = event.target.dataset.phase;
+  if (selectedPhase) {
+    arrElements.forEach((element) => {
+      const currentPhase = determinePhase(element, tempKelvin);
+      document
+        .querySelector(`.atomic-num-${element.number}`)
+        .classList.add(`phase--${currentPhase}`);
+      currentPhase === selectedPhase
+        ? document
+            .querySelector(`.atomic-num-${element.number}`)
+            .classList.remove('cell--inactive')
+        : document
+            .querySelector(`.atomic-num-${element.number}`)
+            .classList.add('cell--inactive');
     });
   }
 });
