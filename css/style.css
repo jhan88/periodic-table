@@ -96,8 +96,7 @@ tr td:nth-child(3) {
 
 .container__fblock {
   position: absolute;
-  bottom: -12rem;
-  left: 14rem;
+  transform: translate(13rem, 2rem);
 }
 
 .container__lanthanide,
