@@ -137,10 +137,9 @@ tr td:nth-child(3) {
 /* Display */
 .container__display-info {
   position: absolute;
-  top: 4.1rem;
-  left: 50%;
-  width: 500px;
-  transform: translateX(-50%);
+  transform: translate(16rem, 4rem);
+  width: 30rem;
+  margin: 0.2rem;
   z-index: 1;
 }
 
