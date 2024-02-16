@@ -350,6 +350,23 @@ const filterPhase = document.createElement('div');
 filterPhase.classList.add('container__filter__phase');
 filterContainer.appendChild(filterPhase);
 
+let tempKelvin = 300;
+
+const formTemp = document.createElement('form');
+formTemp.setAttribute('id', 'getTemp');
+filterPhase.appendChild(formTemp);
+
+const inputTemp = document.createElement('input');
+inputTemp.setAttribute('type', 'number');
+inputTemp.setAttribute('id', 'temperature');
+inputTemp.setAttribute('placeholder', 'Temperature (Kelvin)');
+formTemp.appendChild(inputTemp);
+
+document.getElementById('getTemp').addEventListener('submit', (event) => {
+  event.preventDefault();
+  tempKelvin = document.getElementById('temperature').value;
+});
+
 [...setPhase].forEach((phase) => {
   const buttonPhase = document.createElement('button');
   buttonPhase.classList.add('button__phase');
@@ -358,8 +375,6 @@ filterContainer.appendChild(filterPhase);
   buttonPhase.setAttribute('data-phase', phase);
   buttonPhase.classList.add(`phase--${phase}`);
 });
-
-let tempKelvin = 300; //get temperature from use input
 
 function determinePhase(element, tempKelvin) {
   if (element.melt && tempKelvin <= element.melt) {
