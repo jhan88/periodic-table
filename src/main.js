@@ -185,51 +185,9 @@ containerFblock.appendChild(containerActinide);
     document.querySelector('.container__actinide').appendChild(cell)
   );
 
-// Color cells
-const setCategory = new Set();
-arrElements.forEach((element) => {
-  if (!element.category.startsWith('unknown')) {
-    setCategory.add(element.category);
-  }
-});
-
-const arrColorCategory = [
-  '#B1B2FF',
-  '#cccccc',
-  '#D2DAFF',
-  '#FFC7C7',
-  '#BBDED6',
-
-  '#AAC4FF',
-  '#FFB6B9',
-  '#FFFF66',
-  '#ff7c43',
-  '#ffa600',
-];
-
-function findCategory(element) {
-  if (setCategory.has(element.category)) {
-    return element.category;
-  } else {
-    return [...setCategory].filter((category) =>
-      element.category.includes(category)
-    )[0];
-  }
-}
-
-arrElements.forEach((element) => {
-  const category = findCategory(element);
-
-  const targetCell = periodicTable.querySelector(
-    `[data-atomic-num="${element.number}"]`
-  );
-
-  targetCell.style['background-color'] =
-    arrColorCategory[[...setCategory].indexOf(category)];
-});
-
 arrElements.forEach((element) => fillInfo(element));
 
+// Fill element information
 function fillInfo(element) {
   const targetCell = periodicTable.querySelector(
     `[data-atomic-num="${element.number}"]`
@@ -303,9 +261,71 @@ buttonReset.addEventListener('click', () => {
   });
 });
 
+// Color cells
+const setCategory = new Set();
+arrElements.forEach((element) => {
+  if (!element.category.startsWith('unknown')) {
+    setCategory.add(element.category);
+  }
+});
+
+const arrColorCategory = [
+  '#B1B2FF',
+  '#cccccc',
+  '#D2DAFF',
+  '#FFC7C7',
+  '#BBDED6',
+
+  '#AAC4FF',
+  '#FFB6B9',
+  '#FFFF66',
+  '#ff7c43',
+  '#ffa600',
+];
+
+function findCategory(element) {
+  if (setCategory.has(element.category)) {
+    return element.category;
+  } else {
+    return [...setCategory].filter((category) =>
+      element.category.includes(category)
+    )[0];
+  }
+}
+
 const filterCategory = document.createElement('div');
 filterCategory.classList.add('container__filter__category');
 filterContainer.appendChild(filterCategory);
+
+const buttonFilterCategory = document.createElement('button');
+buttonFilterCategory.setAttribute('class', 'button__filter');
+buttonFilterCategory.textContent = 'Category';
+filterCategory.appendChild(buttonFilterCategory);
+
+buttonFilterCategory.addEventListener('click', (event) => {
+  event.target.classList.toggle('button__filter--active');
+
+  if (event.target.classList.contains('button__filter--active')) {
+    arrElements.forEach((element) => {
+      const category = findCategory(element);
+
+      const targetCell = table.querySelector(
+        `[data-atomic-num="${element.number}"]`
+      );
+
+      targetCell.style['background-color'] =
+        arrColorCategory[[...setCategory].indexOf(category)];
+    });
+  } else {
+    arrElements.forEach((element) => {
+      const targetCell = table.querySelector(
+        `[data-atomic-num="${element.number}"]`
+      );
+
+      targetCell.style['background-color'] = 'var(--color-light-gray)';
+    });
+  }
+});
 
 [...setCategory].forEach((category) => {
   const buttonCategory = document.createElement('button');
@@ -346,11 +366,36 @@ console.log(
   )
 );
 
+let tempKelvin = 300;
+
 const filterPhase = document.createElement('div');
 filterPhase.classList.add('container__filter__phase');
 filterContainer.appendChild(filterPhase);
 
-let tempKelvin = 300;
+const buttonFilterPhase = document.createElement('button');
+buttonFilterPhase.setAttribute('class', 'button__filter');
+buttonFilterPhase.textContent = `Phase at ${tempKelvin}K`;
+filterPhase.appendChild(buttonFilterPhase);
+
+buttonFilterPhase.addEventListener('click', (event) => {
+  event.target.classList.toggle('button__filter--active');
+
+  if (event.target.classList.contains('button__filter--active')) {
+    arrElements.forEach((element) => {
+      const currentPhase = determinePhase(element, tempKelvin);
+      document
+        .querySelector(`.atomic-num-${element.number}`)
+        .classList.add(`phase--${currentPhase}`);
+    });
+  } else {
+    arrElements.forEach((element) => {
+      const currentPhase = determinePhase(element, tempKelvin);
+      document
+        .querySelector(`.atomic-num-${element.number}`)
+        .classList.remove(`phase--${currentPhase}`);
+    });
+  }
+});
 
 const formTemp = document.createElement('form');
 formTemp.setAttribute('id', 'getTemp');
@@ -365,6 +410,7 @@ formTemp.appendChild(inputTemp);
 document.getElementById('getTemp').addEventListener('submit', (event) => {
   event.preventDefault();
   tempKelvin = document.getElementById('temperature').value;
+  buttonFilterPhase.textContent = `Phase at ${tempKelvin}K`;
 });
 
 [...setPhase].forEach((phase) => {
