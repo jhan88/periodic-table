@@ -13,6 +13,18 @@
   --color-gray: #1b1e26;
   --color-light-gray: #eeeeee;
 
+  --color-default-cell: var(--color-light-gray);
+  --color-diatomic-nonmetal: #b1b2ff;
+  --color-noble-gas: #999999;
+  --color-alkali-metal: #d2daff;
+  --color-alkaline-earth-metal: #ffc7c7;
+  --color-metalloid: #bbded6;
+  --color-polyatomic-nonmetal: #aac4ff;
+  --color-post-transition-metal: #ffb6b9;
+  --color-transition-metal: #ffff66;
+  --color-lanthanide: #ff7c43;
+  --color-actinide: #ffa600;
+
   /* Scroll */
   scroll-behavior: smooth;
 }
@@ -50,10 +62,6 @@ button {
   background-color: transparent;
   outline: 0;
   border: 0;
-}
-
-button:focus {
-  outline: 1px solid var(--color-accent);
 }
 
 /* Periodic Table */
@@ -166,7 +174,7 @@ tr td:nth-child(3) {
 }
 
 .button__filter--active {
-  color: var(--color-accent-variant);
+  outline: 3px solid var(--color-accent);
 }
 
 .cell--inactive {
@@ -183,7 +191,7 @@ tr td:nth-child(3) {
   width: 10rem;
 }
 
-.button__category {
+.button__filter__category {
   border-radius: 2px;
   padding: 0.2rem;
 }

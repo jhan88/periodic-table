@@ -4,36 +4,17 @@ import elements from './elements.json' assert { type: 'json' };
 const arrElements = elements.elements.slice(0, 118);
 const periodicTable = document.querySelector('#periodic-table');
 
-// Add category filter
+// Add filter container
 const filterContainer = document.querySelector('.container__filter');
 
-const buttonReset = document.createElement('button');
-buttonReset.classList.add('button__reset');
-buttonReset.innerHTML = 'RESET FILTERS';
-filterContainer.appendChild(buttonReset);
+function createButton(content, className, parentNode) {
+  const button = document.createElement('button');
+  button.textContent = content;
+  button.setAttribute('class', className);
+  return parentNode.appendChild(button);
+}
 
-buttonReset.addEventListener('click', () => {
-  const cellInactive = document.querySelectorAll('.cell--inactive');
-  cellInactive &&
-    [...cellInactive].forEach((cell) =>
-      cell.classList.remove('cell--inactive')
-    );
-
-  const cellPhase = [
-    ...document.querySelectorAll('.phase--solid'),
-    ...document.querySelectorAll('.phase--liquid'),
-    ...document.querySelectorAll('.phase--gas'),
-    ...document.querySelectorAll('.phase--unknown'),
-  ].filter((element) => element.tagName === 'TD');
-  cellPhase.forEach((cell) => {
-    cell.classList.remove('phase--solid');
-    cell.classList.remove('phase--liquid');
-    cell.classList.remove('phase--gas');
-    cell.classList.remove('phase--unknown');
-  });
-});
-
-// Color cells
+// Add category filter
 const setCategory = new Set();
 arrElements.forEach((element) => {
   if (!element.category.startsWith('unknown')) {
@@ -41,91 +22,91 @@ arrElements.forEach((element) => {
   }
 });
 
-const arrColorCategory = [
-  '#B1B2FF',
-  '#cccccc',
-  '#D2DAFF',
-  '#FFC7C7',
-  '#BBDED6',
-
-  '#AAC4FF',
-  '#FFB6B9',
-  '#FFFF66',
-  '#ff7c43',
-  '#ffa600',
-];
-
-function findCategory(element) {
+function determineCategory(element) {
   if (setCategory.has(element.category)) {
-    return element.category;
+    return element.category.replaceAll(' ', '-');
   } else {
-    return [...setCategory].filter((category) =>
-      element.category.includes(category)
-    )[0];
+    return [...setCategory]
+      .filter((category) => element.category.includes(category))[0]
+      .replaceAll(' ', '-');
   }
 }
+
+function addCategory(table, element) {
+  const targetCell = table.querySelector(
+    `[data-atomic-num="${element.number}"]`
+  );
+  targetCell.setAttribute('data-category', determineCategory(element));
+}
+
+arrElements.forEach((element) => addCategory(periodicTable, element));
 
 const filterCategory = document.createElement('div');
 filterCategory.classList.add('container__filter__category');
 filterContainer.appendChild(filterCategory);
 
-const buttonFilterCategory = document.createElement('button');
-buttonFilterCategory.setAttribute('class', 'button__filter');
-buttonFilterCategory.textContent = 'Category';
-filterCategory.appendChild(buttonFilterCategory);
-
-buttonFilterCategory.addEventListener('click', (event) => {
-  event.target.classList.toggle('button__filter--active');
-
-  if (event.target.classList.contains('button__filter--active')) {
-    arrElements.forEach((element) => {
-      const category = findCategory(element);
-
-      const targetCell = table.querySelector(
-        `[data-atomic-num="${element.number}"]`
-      );
-
-      targetCell.style['background-color'] =
-        arrColorCategory[[...setCategory].indexOf(category)];
-    });
-  } else {
-    arrElements.forEach((element) => {
-      const targetCell = table.querySelector(
-        `[data-atomic-num="${element.number}"]`
-      );
-
-      targetCell.style['background-color'] = 'var(--color-light-gray)';
-    });
-  }
-});
+const buttonFilterCategory = createButton(
+  'Category',
+  'button__filter',
+  filterCategory
+);
 
 [...setCategory].forEach((category) => {
-  const buttonCategory = document.createElement('button');
-  buttonCategory.classList.add('button__category');
+  const buttonCategory = createButton(
+    category,
+    'button__filter__category',
+    filterCategory
+  );
+
   buttonCategory.setAttribute(
     'data-category',
     `${category.replaceAll(' ', '-')}`
   );
-  buttonCategory.innerHTML = category;
-  filterCategory.appendChild(buttonCategory);
-  buttonCategory.style['background-color'] =
-    arrColorCategory[[...setCategory].indexOf(category)];
+
+  buttonCategory.style['background-color'] = `var(--color-${category.replaceAll(
+    ' ',
+    '-'
+  )})`;
 });
 
-document.addEventListener('click', (event) => {
+filterCategory.addEventListener('click', (event) => {
+  if (event.target.nodeName !== 'BUTTON') {
+    return;
+  }
+
+  const activeButton = filterCategory.querySelector('.button__filter--active');
+
+  activeButton && activeButton.classList.remove('button__filter--active');
+
+  arrElements.forEach((element) => toggleCategoryFilter(false, element));
+
+  if (activeButton && activeButton.contains(event.target)) {
+    return;
+  } else {
+    event.target.classList.add('button__filter--active');
+  }
+
   const selectedCategory = event.target.dataset.category;
+
   if (selectedCategory) {
-    arrElements.forEach((element) => {
-      findCategory(element).replaceAll(' ', '-') === selectedCategory
-        ? document
-            .querySelector(`.atomic-num-${element.number}`)
-            .classList.remove('cell--inactive')
-        : document
-            .querySelector(`.atomic-num-${element.number}`)
-            .classList.add('cell--inactive');
-    });
+    arrElements
+      .filter((element) => determineCategory(element) === selectedCategory)
+      .forEach((element) => toggleCategoryFilter(true, element));
+  } else {
+    arrElements.forEach((element) => toggleCategoryFilter(true, element));
   }
 });
+
+function toggleCategoryFilter(isFilterOn, element) {
+  const targetCell = periodicTable.querySelector(
+    `[data-atomic-num="${element.number}"]`
+  );
+  isFilterOn
+    ? (targetCell.style[
+        'background-color'
+      ] = `var(--color-${targetCell.dataset.category})`)
+    : (targetCell.style['background-color'] = 'var(--color-default-cell)');
+}
 
 // Add phase filter
 const setPhase = new Set(['solid', 'liquid', 'gas', 'unknown']);
