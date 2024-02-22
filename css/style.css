@@ -25,6 +25,11 @@
   --color-lanthanide: #ff7c43;
   --color-actinide: #ffa600;
 
+  --color-solid: #3166f8;
+  --color-liquid: #9d22da;
+  --color-gas: #fb5b5b;
+  --color-unknown: #050a13;
+
   /* Scroll */
   scroll-behavior: smooth;
 }
@@ -174,13 +179,8 @@ tr td:nth-child(3) {
 }
 
 .button__filter--active {
-  outline: 3px solid var(--color-accent);
-}
-
-.cell--inactive {
-  opacity: 0.3;
-  color: var(--color-white);
-  pointer-events: none;
+  scale: 1.05;
+  box-shadow: rgba(100, 100, 100, 0.5) 0px 5px 30px 0px;
 }
 
 /* Category Filter */
@@ -204,23 +204,7 @@ tr td:nth-child(3) {
   width: 10rem;
 }
 
-.button__phase {
+.button__filter__phase {
   border-radius: 2px;
   padding: 0.2rem;
-}
-
-.phase--solid {
-  border: 3px solid var(--color-black);
-}
-
-.phase--liquid {
-  border: 3px solid var(--color-blue);
-}
-
-.phase--gas {
-  border: 3px solid var(--color-orange);
-}
-
-.phase--unknown {
-  border: 3px dotted var(--color-gray);
 }

@@ -111,97 +111,144 @@ function toggleCategoryFilter(isFilterOn, element) {
 // Add phase filter
 const setPhase = new Set(['solid', 'liquid', 'gas', 'unknown']);
 
-console.log(arrElements.filter((element) => element.melt === null));
-console.log(arrElements.filter((element) => element.boil === null));
-console.log(
-  arrElements.filter(
-    (element) => element.boil === null && element.melt === null
-  )
-);
-
 let tempKelvin = 300;
 
 const filterPhase = document.createElement('div');
 filterPhase.classList.add('container__filter__phase');
 filterContainer.appendChild(filterPhase);
+filterPhase.innerHTML = `
+  <form id="getTemp">
+    <input type="number" id="temperature" placeholder="Temperature (Kelvin)" />
+  </form>`;
 
-const buttonFilterPhase = document.createElement('button');
-buttonFilterPhase.setAttribute('class', 'button__filter');
-buttonFilterPhase.textContent = `Phase at ${tempKelvin}K`;
-filterPhase.appendChild(buttonFilterPhase);
+filterPhase.addEventListener('submit', (event) => {
+  if (event.target.id !== 'getTemp') {
+    return;
+  }
 
-buttonFilterPhase.addEventListener('click', (event) => {
-  event.target.classList.toggle('button__filter--active');
+  event.preventDefault();
+  tempKelvin = document.querySelector('#temperature').value;
+  buttonFilterPhase.textContent = `Phase at ${tempKelvin}K`;
 
-  if (event.target.classList.contains('button__filter--active')) {
-    arrElements.forEach((element) => {
-      const currentPhase = determinePhase(element, tempKelvin);
-      document
-        .querySelector(`.atomic-num-${element.number}`)
-        .classList.add(`phase--${currentPhase}`);
-    });
+  const activeButton = filterPhase.querySelector('.button__filter--active');
+
+  if (!activeButton) {
+    return;
+  }
+
+  const selectedPhase = activeButton.dataset.phase;
+
+  if (selectedPhase) {
+    arrElements.forEach((element) =>
+      togglePhaseFilter(false, tempKelvin, element)
+    );
+    arrElements
+      .filter(
+        (element) => determinePhase(tempKelvin, element) === selectedPhase
+      )
+      .forEach((element) => togglePhaseFilter(true, tempKelvin, element));
   } else {
-    arrElements.forEach((element) => {
-      const currentPhase = determinePhase(element, tempKelvin);
-      document
-        .querySelector(`.atomic-num-${element.number}`)
-        .classList.remove(`phase--${currentPhase}`);
-    });
+    arrElements.forEach((element) =>
+      togglePhaseFilter(true, tempKelvin, element)
+    );
+  }
+
+  event.target.reset();
+  event.target.focus();
+});
+
+const buttonFilterPhase = createButton(
+  `Phase at ${tempKelvin}K`,
+  'button__filter',
+  filterPhase
+);
+
+[...setPhase].forEach((phase) => {
+  const buttonPhase = createButton(phase, 'button__filter__phase', filterPhase);
+
+  buttonPhase.setAttribute('data-phase', phase);
+
+  buttonPhase.style['border'] = `3px solid var(--color-${phase})`;
+});
+
+filterPhase.addEventListener('click', (event) => {
+  if (event.target.nodeName !== 'BUTTON') {
+    return;
+  }
+
+  const activeButton = filterPhase.querySelector('.button__filter--active');
+
+  activeButton && activeButton.classList.remove('button__filter--active');
+
+  arrElements.forEach((element) =>
+    togglePhaseFilter(false, tempKelvin, element)
+  );
+
+  if (activeButton && activeButton.contains(event.target)) {
+    return;
+  } else {
+    event.target.classList.add('button__filter--active');
+  }
+
+  const selectedPhase = event.target.dataset.phase;
+
+  if (selectedPhase) {
+    arrElements
+      .filter(
+        (element) => determinePhase(tempKelvin, element) === selectedPhase
+      )
+      .forEach((element) => togglePhaseFilter(true, tempKelvin, element));
+  } else {
+    arrElements.forEach((element) =>
+      togglePhaseFilter(true, tempKelvin, element)
+    );
   }
 });
 
-const formTemp = document.createElement('form');
-formTemp.setAttribute('id', 'getTemp');
-filterPhase.appendChild(formTemp);
+function togglePhaseFilter(isFilterOn, tempKelvin, element) {
+  const targetCell = periodicTable.querySelector(
+    `[data-atomic-num="${element.number}"]`
+  );
+  isFilterOn
+    ? (targetCell.style['border-color'] = `var(--color-${determinePhase(
+        tempKelvin,
+        element
+      )})`)
+    : (targetCell.style['border-color'] = 'transparent');
+}
 
-const inputTemp = document.createElement('input');
-inputTemp.setAttribute('type', 'number');
-inputTemp.setAttribute('id', 'temperature');
-inputTemp.setAttribute('placeholder', 'Temperature (Kelvin)');
-formTemp.appendChild(inputTemp);
+function determinePhase(tempKelvin, element) {
+  if (!element.melt && !element.boil) {
+    return 'unknown';
+  }
 
-document.getElementById('getTemp').addEventListener('submit', (event) => {
-  event.preventDefault();
-  tempKelvin = document.getElementById('temperature').value;
-  buttonFilterPhase.textContent = `Phase at ${tempKelvin}K`;
-});
+  if (!element.melt) {
+    return tempKelvin < element.boil ? 'unknown' : 'gas';
+  }
 
-[...setPhase].forEach((phase) => {
-  const buttonPhase = document.createElement('button');
-  buttonPhase.classList.add('button__phase');
-  buttonPhase.innerHTML = phase;
-  filterPhase.appendChild(buttonPhase);
-  buttonPhase.setAttribute('data-phase', phase);
-  buttonPhase.classList.add(`phase--${phase}`);
-});
+  if (!element.boil) {
+    return tempKelvin < element.melt ? 'solid' : 'unknown';
+  }
 
-function determinePhase(element, tempKelvin) {
-  if (element.melt && tempKelvin <= element.melt) {
+  if (tempKelvin === element.melt && tempKelvin === element.boil) {
+    return 'solid gas';
+  }
+
+  if (tempKelvin === element.melt) {
+    return 'solid liquid';
+  }
+
+  if (tempKelvin === element.boil) {
+    return 'liquid gas';
+  }
+
+  if (tempKelvin < element.melt) {
     return 'solid';
-  } else if (element.boil && tempKelvin <= element.boil) {
+  } else if (tempKelvin < element.boil) {
     return 'liquid';
-  } else if (element.boil && tempKelvin > element.boil) {
+  } else if (tempKelvin > element.boil) {
     return 'gas';
   } else {
     return 'unknown';
   }
 }
-
-document.addEventListener('click', (event) => {
-  const selectedPhase = event.target.dataset.phase;
-  if (selectedPhase) {
-    arrElements.forEach((element) => {
-      const currentPhase = determinePhase(element, tempKelvin);
-      document
-        .querySelector(`.atomic-num-${element.number}`)
-        .classList.add(`phase--${currentPhase}`);
-      currentPhase === selectedPhase
-        ? document
-            .querySelector(`.atomic-num-${element.number}`)
-            .classList.remove('cell--inactive')
-        : document
-            .querySelector(`.atomic-num-${element.number}`)
-            .classList.add('cell--inactive');
-    });
-  }
-});
