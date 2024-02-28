@@ -1,54 +1,22 @@
 'use strict';
 import elements from './elements.json' assert { type: 'json' };
+import TableBuilder from './table.js';
 
 const arrElements = elements.elements.slice(0, 118);
 const numPeriod = 7;
 const numGroup = 18;
 const numFblock = 14;
 
-const periodicTable = createTable(
-  'periodic-table',
-  numPeriod,
-  numGroup + numFblock,
-  1,
-  1,
-  document.querySelector('.container__periodic-table')
-);
+const periodicTable = new TableBuilder()
+  .withClassName('periodic-table')
+  .withNumRow(numPeriod)
+  .withNumCol(numGroup + numFblock)
+  .withParent(document.querySelector('.container__periodic-table'))
+  .build();
 
-addPeriod(periodicTable);
-addGroup(periodicTable);
-arrElements.forEach((element) => addAtomicNum(periodicTable, element));
-
-function createTable(
-  id,
-  rowNum,
-  colNum,
-  rowHead = 0,
-  colHead = 0,
-  parent = document.body
-) {
-  const table = document.createElement('table');
-  table.setAttribute('id', id);
-  const tableBody = document.createElement('tbody');
-
-  for (let i = 0 - rowHead; i < rowNum; i++) {
-    const tableRow = document.createElement('tr');
-    tableRow.setAttribute('data-row', i);
-    for (let j = 0 - colHead; j < colNum; j++) {
-      const tableCell =
-        i < 0 || j < 0
-          ? document.createElement('th')
-          : document.createElement('td');
-      tableCell.setAttribute('data-row', i);
-      tableCell.setAttribute('data-column', j);
-      tableRow.appendChild(tableCell);
-    }
-    tableBody.appendChild(tableRow);
-  }
-  table.appendChild(tableBody);
-
-  return parent.appendChild(table);
-}
+addPeriod(periodicTable.table);
+addGroup(periodicTable.table);
+arrElements.forEach((element) => addAtomicNum(periodicTable.table, element));
 
 function addPeriod(table) {
   const listTr = table.querySelectorAll('tr');
@@ -69,7 +37,7 @@ function addGroup(table) {
   const listTd = table.querySelectorAll('td');
 
   [...listTr, ...listTh, ...listTd].forEach((cell) => {
-    const colNum = Number(cell.dataset.column);
+    const colNum = Number(cell.dataset.col);
     if (colNum >= 0) {
       if (colNum < 2) {
         cell.setAttribute('data-group', colNum + 1);
@@ -137,24 +105,24 @@ function countBalanceElectronLaAc(electron_configuration_semantic) {
 
 // Frame Cells
 // write periods
-[...periodicTable.querySelectorAll('th')]
-  .filter((cell) => cell.dataset.column === '-1' && cell.dataset.period)
+[...periodicTable.table.querySelectorAll('th')]
+  .filter((cell) => cell.dataset.col === '-1' && cell.dataset.period)
   .forEach((cell) => (cell.textContent = cell.dataset.period));
 
 // write groups
-[...periodicTable.querySelectorAll('th')]
+[...periodicTable.table.querySelectorAll('th')]
   .filter((cell) => cell.dataset.row === '-1' && cell.dataset.group)
   .forEach((cell) => (cell.textContent = cell.dataset.group));
 
 // hide unnecessary cells
 [
-  ...periodicTable.querySelectorAll('th'),
-  ...periodicTable.querySelectorAll('td'),
+  ...periodicTable.table.querySelectorAll('th'),
+  ...periodicTable.table.querySelectorAll('td'),
 ]
   .filter((cell) => cell.dataset.row < 5 && cell.dataset.fblock)
   .forEach((cell) => cell.classList.add('cell--none'));
 
-[...periodicTable.querySelectorAll('td')]
+[...periodicTable.table.querySelectorAll('td')]
   .filter((cell) => !cell.dataset.atomicNum)
   .forEach((cell) => cell.classList.add('cell--hidden'));
 
@@ -167,19 +135,19 @@ containerFblock.classList.add('container__fblock');
 containerLanthanide.classList.add('container__lanthanide');
 containerActinide.classList.add('container__actinide');
 
-periodicTable.appendChild(containerFblock);
+periodicTable.table.appendChild(containerFblock);
 containerFblock.appendChild(containerLanthanide);
 containerFblock.appendChild(containerActinide);
 
 // add lanthanide cells to container lanthanide
-[...periodicTable.querySelectorAll('td')]
+[...periodicTable.table.querySelectorAll('td')]
   .filter((cell) => cell.dataset.period == 6 && cell.dataset.fblock)
   .forEach((cell) =>
     document.querySelector('.container__lanthanide').appendChild(cell)
   );
 
 // add actinide cells to container actinide
-[...periodicTable.querySelectorAll('td')]
+[...periodicTable.table.querySelectorAll('td')]
   .filter((cell) => cell.dataset.period == 7 && cell.dataset.fblock)
   .forEach((cell) =>
     document.querySelector('.container__actinide').appendChild(cell)
@@ -189,7 +157,7 @@ arrElements.forEach((element) => fillInfo(element));
 
 // Fill element information
 function fillInfo(element) {
-  const targetCell = periodicTable.querySelector(
+  const targetCell = periodicTable.table.querySelector(
     `[data-atomic-num="${element.number}"]`
   );
   targetCell.classList.add('cell__info');
@@ -221,7 +189,7 @@ document.addEventListener('click', (event) => {
   }
 
   const atomicNum = event.target.dataset.atomicNum;
-  const cellFocus = periodicTable.querySelector('.cell__info--active');
+  const cellFocus = periodicTable.table.querySelector('.cell__info--focus');
   const previousDisplay = document.querySelector('.list__display-info');
 
   cellFocus && cellFocus.classList.remove('cell__info--active');

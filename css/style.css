@@ -74,7 +74,7 @@ button {
   position: relative;
 }
 
-#periodic-table {
+.periodic-table {
   border: hidden;
   border-spacing: 0;
   border-collapse: collapse;

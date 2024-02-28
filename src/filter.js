@@ -2,7 +2,7 @@
 import elements from './elements.json' assert { type: 'json' };
 
 const arrElements = elements.elements.slice(0, 118);
-const periodicTable = document.querySelector('#periodic-table');
+const periodicTable = document.querySelector('.periodic-table');
 
 // Add filter container
 const filterContainer = document.querySelector('.container__filter');
