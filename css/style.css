@@ -39,7 +39,6 @@
 }
 
 body {
-  display: flex;
   font-family: 'Noto Sans', sans-serif;
   margin: 0;
 }
@@ -67,6 +66,20 @@ button {
   background-color: transparent;
   outline: 0;
   border: 0;
+}
+
+/* Header */
+.header {
+  display: flex;
+}
+
+.header__title {
+  margin: 0.5rem 2rem;
+}
+
+/* Main */
+.main {
+  display: flex;
 }
 
 /* Periodic Table */
