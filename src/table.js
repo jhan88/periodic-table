@@ -1,6 +1,6 @@
 'use strict';
 
-export default class TableBuilder {
+export class TableBuilder {
   withClassName(className) {
     this.className = className;
     return this;
@@ -57,12 +57,24 @@ class Table {
     this.rowHead = rowHead;
     this.colHead = colHead;
 
-    this.table = document.createElement('table');
+    this.table = this.createTable();
     this.table.classList.add(className);
     parent.appendChild(this.table);
 
-    this.tbody = this.createTbody();
-    this.table.appendChild(this.tbody);
+    this.cell;
+    this.cells;
+
+    this.table.addEventListener('click', (event) => {
+      this.onClick && this.onClick(event);
+    });
+  }
+
+  createTable() {
+    const table = document.createElement('table');
+    const tbody = this.createTbody();
+    table.appendChild(tbody);
+
+    return table;
   }
 
   createTbody() {
@@ -99,7 +111,42 @@ class Table {
     return td;
   }
 
-  table() {
-    return this.table;
+  cell({ ...dataSet }) {
+    let strSelector = '';
+    for (const key of Object.keys(dataSet)) {
+      strSelector += `[data-${key}="${dataSet[key]}"]`;
+    }
+    return this.table.querySelector(strSelector);
+  }
+
+  cells(...selectors) {
+    let strSelector = '';
+    for (const name of selectors) {
+      strSelector += `${name},`;
+    }
+    return this.table.querySelectorAll(strSelector.slice(0, -1));
+  }
+
+  toCell({ ...dataSet }) {
+    this.callback &&
+      this.cell({ ...dataSet }) &&
+      this.callback(this.cell({ ...dataSet }));
+    return this.cell || this;
+  }
+
+  toCells(...selectors) {
+    this.callback &&
+      this.cells(...selectors) &&
+      this.cells(...selectors).forEach(this.callback);
+    return this.cells || this;
+  }
+
+  apply(callback) {
+    this.callback = callback;
+    return this;
+  }
+
+  setClick(onClick) {
+    this.onClick = onClick;
   }
 }
