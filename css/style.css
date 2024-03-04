@@ -14,16 +14,16 @@
   --color-light-gray: #eeeeee;
 
   --color-default-cell: var(--color-light-gray);
-  --color-diatomic-nonmetal: #b1b2ff;
-  --color-noble-gas: #999999;
   --color-alkali-metal: #d2daff;
-  --color-alkaline-earth-metal: #ffc7c7;
-  --color-metalloid: #bbded6;
-  --color-polyatomic-nonmetal: #aac4ff;
-  --color-post-transition-metal: #ffb6b9;
+  --color-alkaline-earth-metal: #ffd0d0;
   --color-transition-metal: #ffff66;
   --color-lanthanide: #ff7c43;
   --color-actinide: #ffa600;
+  --color-post-transition-metal: #fa9b9b;
+  --color-metalloid: #bbded6;
+  --color-diatomic-nonmetal: #b1b2ff;
+  --color-polyatomic-nonmetal: #aac4ff;
+  --color-noble-gas: #999999;
 
   --color-solid: #3166f8;
   --color-liquid: #9d22da;
@@ -126,15 +126,14 @@ tr td:nth-child(3) {
 
 .cell__info {
   position: relative;
-  border: 3px solid transparent;
-  background-color: var(--color-light-gray);
+  background-color: var(--color-default-cell);
   transition: all 100ms ease;
 }
 
 .cell__info--active {
   scale: 1.2;
   z-index: 1;
-  box-shadow: rgba(100, 100, 100, 0.5) 0px 5px 30px 0px;
+  box-shadow: rgba(100, 100, 100, 0.5) 0px 0px 10px 0px;
 }
 
 .cell__info__atom-num {
@@ -179,12 +178,17 @@ tr td:nth-child(3) {
 }
 
 .button__filter {
-  font-size: 1.1rem;
+  border-radius: 2px;
+  padding: 0.2rem;
+  width: 100%;
+  height: 2rem;
+  font-size: 1rem;
+  text-transform: capitalize;
 }
 
 .button__filter--active {
   scale: 1.05;
-  box-shadow: rgba(100, 100, 100, 0.5) 0px 5px 30px 0px;
+  box-shadow: rgba(100, 100, 100, 0.5) 0px 0px 10px 0px;
 }
 
 /* Category Filter */
@@ -196,10 +200,44 @@ tr td:nth-child(3) {
   width: 12rem;
 }
 
-.button__filter__category {
-  border-radius: 2px;
-  padding: 0.2rem;
-  width: 100%;
+.category--alkali-metal {
+  background-color: var(--color-alkali-metal);
+}
+
+.category--alkaline-earth-metal {
+  background-color: var(--color-alkaline-earth-metal);
+}
+
+.category--transition-metal {
+  background-color: var(--color-transition-metal);
+}
+
+.category--post-transition-metal {
+  background-color: var(--color-post-transition-metal);
+}
+
+.category--lanthanide {
+  background-color: var(--color-lanthanide);
+}
+
+.category--actinide {
+  background-color: var(--color-actinide);
+}
+
+.category--metalloid {
+  background-color: var(--color-metalloid);
+}
+
+.category--diatomic-nonmetal {
+  background-color: var(--color-diatomic-nonmetal);
+}
+
+.category--polyatomic-nonmetal {
+  background-color: var(--color-polyatomic-nonmetal);
+}
+
+.category--noble-gas {
+  background-color: var(--color-noble-gas);
 }
 
 /* Phase Filter */
@@ -211,8 +249,41 @@ tr td:nth-child(3) {
   width: 12rem;
 }
 
-.button__filter__phase {
-  border-radius: 2px;
-  padding: 0.2rem;
-  width: 100%;
+.phase__temp {
+  display: inline-block;
+}
+
+.phase__temp__input {
+  width: 4.5rem;
+}
+
+.phase--solid {
+  box-shadow: inset 0px 0px 3px 3px var(--color-solid);
+}
+
+.phase--liquid {
+  box-shadow: inset 0px 0px 3px 3px var(--color-liquid);
+}
+
+.phase--gas {
+  box-shadow: inset 0px 0px 3px 3px var(--color-gas);
+}
+
+.phase--solid-liquid {
+  box-shadow: inset 2px 2px 3px 2px var(--color-solid),
+    inset -2px -2px 3px 2px var(--color-liquid);
+}
+
+.phase--solid-gas {
+  box-shadow: inset 2px 2px 3px 2px var(--color-solid),
+    inset -2px -2px 3px 2px var(--color-gas);
+}
+
+.phase--liquid-gas {
+  box-shadow: inset 2px 2px 3px 2px var(--color-liquid),
+    inset -2px -2px 3px 2px var(--color-gas);
+}
+
+.phase--unknown {
+  box-shadow: inset 0px 0px 3px 3px var(--color-unknown);
 }
