@@ -40,6 +40,9 @@
 
 body {
   font-family: 'Noto Sans', sans-serif;
+  position: relative;
+  min-height: 100vh;
+  height: auto;
   margin: 0;
 }
 
@@ -80,11 +83,14 @@ button {
 /* Main */
 .main {
   display: flex;
+  overflow: auto;
 }
 
 /* Periodic Table */
 .container__periodic-table {
   position: relative;
+  margin: 0 auto;
+  padding-bottom: 12rem;
 }
 
 .periodic-table {
@@ -299,4 +305,20 @@ tr td:nth-child(3) {
 
 .phase--unknown {
   box-shadow: inset 0px 0px 3px 3px var(--color-unknown);
+}
+
+/* Footer */
+.footer {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 10rem;
+  width: 100%;
+}
+
+.footer__contact {
+  margin: 0.5rem;
+  font-size: 2rem;
 }
