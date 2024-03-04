@@ -1,6 +1,7 @@
 'use strict';
 import elements from './elements.json' assert { type: 'json' };
 import { TableBuilder } from './table.js';
+import { Display } from './display.js';
 
 const arrElements = elements.elements.slice(0, 118);
 const NUM_PERIOD = 7;
@@ -168,34 +169,21 @@ pTable
   .toCells('.cell__info');
 
 // Display element information in detail
-const sectionDisplay = document.querySelector('.container__display-info');
+const display = new Display();
+pTable.setClick((event) => {
+  display.reset();
 
-function displayInfoDetail(element) {
-  return `
-    <ul class="list__display-info">
-      <li class="item__display-info">Name:\t\t\t${element.name}</li>
-      <li class="item__display-info">Symbol:\t\t\t${element.symbol}</li>
-      <li class="item__display-info">Atomic number:\t${element.number}</li>
-      <li class="item__display-info">Atomic mass:\t${element.atomic_mass}u</li>
-      <li class="item__display-info">Category:\t\t${element.category}</li>
-      <li class="item__display-info"><a href=${element.source} target="_blank" class="link-wikipedia">Find the wikipedia page for ${element.name}</a></li>
-    </ul>
-  `;
-}
-
-document.addEventListener('click', (event) => {
-  if (sectionDisplay.contains(event.target)) {
+  const cellActive = document.querySelector('.cell__info--active');
+  cellActive && cellActive.classList.remove('cell__info--active');
+  if (cellActive && cellActive.contains(event.target)) {
     return;
   }
 
-  const atomicNum = event.target.dataset.atomicNum;
-  const cellFocus = pTable.table.querySelector('.cell__info--focus');
-  const previousDisplay = document.querySelector('.list__display-info');
-
-  cellFocus && cellFocus.classList.remove('cell__info--active');
-  previousDisplay && previousDisplay.remove();
-  if (atomicNum) {
-    event.target.classList.add('cell__info--active');
-    sectionDisplay.innerHTML = displayInfoDetail(arrElements[atomicNum - 1]);
+  const atomNum = event.target.dataset.atomNum;
+  if (!atomNum) {
+    return;
   }
+
+  event.target.classList.add('cell__info--active');
+  display.show(arrElements[atomNum - 1]);
 });
