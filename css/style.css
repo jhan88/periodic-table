@@ -98,6 +98,12 @@ button:hover {
   box-shadow: rgba(100, 100, 100, 0.5) 0px 3px 3px 0px;
   z-index: 3;
   font-size: var(--header-font-size);
+  z-index: 3;
+}
+
+.header__button__filter {
+  display: none;
+  transition: all 100ms ease;
 }
 
 .header__title {
@@ -400,6 +406,39 @@ tr td:nth-child(3) {
 
   .container__display {
     font-size: 0.9rem;
+  }
+
+  /* Hide Filters */
+  .header__button__filter {
+    display: block;
+    border-radius: 100%;
+    width: calc(var(--header-font-size) * 3);
+    height: calc(var(--header-font-size) * 3);
+    margin: auto 0.5rem;
+    text-align: center;
+    font-size: calc(var(--header-font-size) * 1.5);
+    opacity: 0.5;
+  }
+
+  .header__button__filter--active {
+    color: var(--color-accent);
+    opacity: 1;
+  }
+
+  .container__filter {
+    position: absolute;
+    transform: translate(-100%, -1rem);
+    background-color: var(--color-default-cell-light);
+    padding: 1rem 0;
+    margin: 0;
+    opacity: 0;
+    z-index: 2;
+    transition: all 300ms ease-out;
+  }
+
+  .container__filter--active {
+    transform: translateY(-1rem);
+    opacity: 1;
   }
 }
 

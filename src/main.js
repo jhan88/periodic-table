@@ -235,3 +235,18 @@ function determinePhase(tempKelvin, atomNum) {
     return 'unknown';
   }
 }
+
+// Hide Filters
+const containerFilter = document.querySelector('.container__filter');
+const toggleFilter = document.querySelector('.header__button__filter');
+
+toggleFilter.addEventListener('click', (event) => {
+  event.currentTarget.classList.toggle('header__button__filter--active');
+  containerFilter.classList.toggle('container__filter--active');
+  const filterX = containerFilter.classList.contains(
+    'container__filter--active'
+  )
+    ? window.scrollX
+    : 0;
+  containerFilter.style.transform = `translate(${filterX}px, -1rem)`;
+});
