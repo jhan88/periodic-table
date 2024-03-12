@@ -1,16 +1,12 @@
 'use strict';
 
 import { TableBuilder } from './table.js';
-import elements from './elements.json' assert { type: 'json' };
+import { atom, createCellInfo } from './atom.js';
 
 const NUM_PERIOD = 7;
 const NUM_GROUP = 18;
 const NUM_FBLOCK = 14;
 const NUM_ELEMENT = 118;
-
-export function atom(atomNum) {
-  return elements.elements[atomNum - 1];
-}
 
 export const pTable = new TableBuilder()
   .withClassName('periodic-table')
@@ -114,11 +110,8 @@ pTable
     if (!atomNum) {
       return;
     }
-    cell.classList.add('cell__info');
-    cell.innerHTML = `
-      <span class="cell__info__atom-num">${atomNum}</span>
-      <p class="cell__info__symbol">${atom(atomNum).symbol}</p>
-    `;
+    cell.classList.add('atom');
+    cell.appendChild(createCellInfo(atomNum, 'summary'));
   })
   .toCells('td');
 
@@ -132,13 +125,11 @@ pTable
   .toCells('th');
 pTable
   .apply((cell) => {
-    if (!cell.dataset.atomNum) {
-      cell.dataset.row < 5 && cell.dataset.fblock
-        ? cell.classList.add('cell--none')
-        : cell.classList.add('cell--hidden');
-    }
+    cell.dataset.row < 5 && cell.dataset.fblock
+      ? cell.classList.add('cell--none')
+      : cell.classList.add('cell--hidden');
   })
-  .toCells('td');
+  .toCells('td:not(.atom)');
 
 // create style div containers for f-block element cells
 const containerFblock = document.createElement('div');
@@ -160,7 +151,7 @@ pTable
       containerLanthanide.appendChild(cell);
     }
   })
-  .toCells('.cell__info');
+  .toCells('.atom');
 
 // add actinide cells to container actinide
 pTable
@@ -169,4 +160,4 @@ pTable
       containerActinide.appendChild(cell);
     }
   })
-  .toCells('.cell__info');
+  .toCells('.atom');

@@ -1,15 +1,14 @@
 'use strict';
 
 export class Filter {
-  constructor(title, set) {
+  constructor(title, filterSet) {
     this.title = title;
-    this.set = set;
 
     this.container = document.createElement('div');
     this.container.classList.add(`container__filter__${title}`);
     document.querySelector('.container__filter').appendChild(this.container);
 
-    ['all', ...set].forEach((member) => {
+    ['all', ...filterSet].forEach((member) => {
       this.createButton(
         member === 'all' ? this.title : member,
         member.replaceAll(' ', '-')

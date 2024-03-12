@@ -1,5 +1,11 @@
 'use strict';
-import { pTable, atom } from './periodicTable.js';
+import { pTable } from './periodicTable.js';
+import {
+  categorySet,
+  determineCategory,
+  phaseSet,
+  determinePhase,
+} from './atom.js';
 import { Display } from './display.js';
 import { Filter } from './filter.js';
 
@@ -8,8 +14,8 @@ const display = new Display();
 pTable.setClick((event) => {
   display.reset();
 
-  const cellActive = document.querySelector('.cell__info--active');
-  cellActive && cellActive.classList.remove('cell__info--active');
+  const cellActive = document.querySelector('.atom--active');
+  cellActive && cellActive.classList.remove('atom--active');
   if (cellActive && cellActive.contains(event.target)) {
     return;
   }
@@ -19,26 +25,12 @@ pTable.setClick((event) => {
     return;
   }
 
-  event.target.classList.add('cell__info--active');
-  display.show(atom(atomNum));
+  event.target.classList.add('atom--active');
+  display.show(atomNum);
 });
 
 // Filter category
-const filterCategory = new Filter(
-  'category',
-  new Set([
-    'alkali metal',
-    'alkaline earth metal',
-    'transition metal',
-    'lanthanide',
-    'actinide',
-    'post-transition metal',
-    'metalloid',
-    'diatomic nonmetal',
-    'polyatomic nonmetal',
-    'noble gas',
-  ])
-);
+const filterCategory = new Filter('category', categorySet);
 
 pTable
   .apply((cell) => {
@@ -46,7 +38,7 @@ pTable
     const category = determineCategory(atomNum);
     cell.setAttribute('data-category', category.replaceAll(' ', '-'));
   })
-  .toCells('.cell__info');
+  .toCells('.atom');
 
 filterCategory.setClick((event) => {
   const activeButton = filterCategory.active();
@@ -78,7 +70,7 @@ function categoryOn(button) {
         cell.classList.add(`category--${cell.dataset.category}`);
       }
     })
-    .toCells('.cell__info');
+    .toCells('.atom');
 }
 
 function categoryOff() {
@@ -86,39 +78,26 @@ function categoryOff() {
     .apply((cell) => {
       cell.classList.remove(`category--${cell.dataset.category}`);
     })
-    .toCells('.cell__info');
-}
-
-function determineCategory(atomNum) {
-  const category = atom(atomNum).category;
-  if (filterCategory.set.has(category)) {
-    return category;
-  }
-
-  for (let member of filterCategory.set) {
-    if (category.includes(member)) {
-      return member;
-    }
-  }
+    .toCells('.atom');
 }
 
 // Filter Phase
 const filterPhase = new Filter(
   'phase',
-  new Set(['solid', 'liquid', 'gas', 'unknown'])
+  phaseSet.filter((phase) => !phase.includes('-'))
 );
 
 let tempKelvin = 300;
 
 filterPhase.button('.phase--all').innerHTML = `
   Phase at <div class="phase__temp">
-    <form id="getTemp">
+    <form id="temp--number">
       <input type="number" step="0.0001" id="temp" class="phase__temp__input" placeholder="${tempKelvin}" />
     </form>
   </div>K`;
 
 filterPhase.setSubmit((event) => {
-  if (!event.target.id === 'getTemp') {
+  if (!event.target.id === 'temp--number') {
     return;
   }
 
@@ -145,7 +124,7 @@ filterPhase.setSubmit((event) => {
 });
 
 filterPhase.setClick((event) => {
-  if (document.querySelector('#getTemp').contains(event.target)) {
+  if (document.querySelector('#temp--number').contains(event.target)) {
     return;
   }
 
@@ -178,62 +157,15 @@ function phaseOn(button) {
         cell.classList.add(`phase--${phase}`);
       }
     })
-    .toCells('.cell__info');
+    .toCells('.atom');
 }
 
 function phaseOff() {
   pTable
     .apply((cell) => {
-      cell.classList.remove(
-        'phase--solid',
-        'phase--liquid',
-        'phase--gas',
-        'phase--solid-liquid',
-        'phase--solid-gas',
-        'phase--liquid-gas',
-        'phase--unknown'
-      );
+      phaseSet.forEach((phase) => cell.classList.remove(`phase--${phase}`));
     })
-    .toCells('.cell__info');
-}
-
-function determinePhase(tempKelvin, atomNum) {
-  const melt = atom(atomNum).melt;
-  const boil = atom(atomNum).boil;
-
-  if (!melt && !boil) {
-    return 'unknown';
-  }
-
-  if (!melt) {
-    return tempKelvin <= boil ? 'unknown' : 'gas';
-  }
-
-  if (!boil) {
-    return tempKelvin <= melt ? 'solid' : 'unknown';
-  }
-
-  if (tempKelvin === melt && tempKelvin === boil) {
-    return 'solid-gas';
-  }
-
-  if (tempKelvin === melt) {
-    return 'solid-liquid';
-  }
-
-  if (tempKelvin === boil) {
-    return 'liquid-gas';
-  }
-
-  if (tempKelvin < melt) {
-    return 'solid';
-  } else if (tempKelvin < boil) {
-    return 'liquid';
-  } else if (tempKelvin > boil) {
-    return 'gas';
-  } else {
-    return 'unknown';
-  }
+    .toCells('.atom');
 }
 
 // Hide Filters
