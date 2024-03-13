@@ -35,8 +35,11 @@
   --cell-font-size: 1.6rem;
   --header-font-size: 1rem;
 
-  /* Scroll */
+  /* Behavior */
+  overflow-x: hidden;
   scroll-behavior: smooth;
+  cursor: default;
+  user-select: none;
 }
 
 * {
@@ -46,6 +49,8 @@
 body {
   font-family: 'Noto Sans', sans-serif;
   position: relative;
+  height: 100%;
+  width: 100%;
   min-height: 100vh;
   min-width: min-content;
   margin: 0;
@@ -69,7 +74,7 @@ a {
   text-decoration: none;
   color: var(--color-text);
   font-weight: 600;
-  transition: all 100ms ease-out;
+  transition: color 100ms ease-out;
 }
 
 a:hover {
@@ -78,13 +83,13 @@ a:hover {
 
 button {
   background-color: transparent;
-  outline: 0;
-  border: 0;
-  transition: all 100ms ease-out;
+  outline: none;
+  border: none;
+  transition: scale 100ms ease-out;
 }
 
 button:hover {
-  outline: 3px solid var(--color-accent);
+  outline: 2px solid var(--color-accent);
 }
 
 /* Header */
@@ -96,32 +101,44 @@ button:hover {
   display: flex;
   background-color: var(--color-primary);
   box-shadow: rgba(100, 100, 100, 0.5) 0px 3px 3px 0px;
-  z-index: 3;
   font-size: var(--header-font-size);
   z-index: 3;
 }
 
 .header__button__filter {
   display: none;
-  transition: all 100ms ease;
 }
 
 .header__title {
   margin: 0.5rem 2rem;
 }
 
+/* Container main footer */
+.container__main-footer {
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  height: 100%;
+  min-height: 100vh;
+  padding-top: 4rem;
+}
+
 /* Main */
 .main {
-  padding-top: 5rem;
-  padding-bottom: 10rem;
+  flex: 1 1 auto;
   display: flex;
+  height: 100%;
+  margin-top: 1rem;
 }
 
 /* Periodic Table */
 .container__periodic-table {
   position: relative;
-  margin-right: 2rem;
-  padding-bottom: 12rem;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: calc(var(--cell-height) * 3);
+  overflow-x: auto;
 }
 
 .periodic-table {
@@ -145,8 +162,8 @@ td {
   width: var(--cell-width);
   height: var(--cell-height);
   padding: 0;
+  overflow: hidden;
   cursor: default;
-  user-select: none;
 }
 
 th {
@@ -204,30 +221,42 @@ tr td:nth-child(3) {
   opacity: 0.7;
 }
 
-.cell__info {
-  position: relative;
+/* atom */
+.atom {
   background-color: var(--color-default-cell-light);
-  transition: all 100ms ease;
+  padding: 0.3rem 0;
+  transition-property: background-color, scale;
+  transition-duration: 100ms;
+  transition-timing-function: ease;
 }
 
-.cell__info--active {
+.atom--active {
   scale: 1.2;
   z-index: 1;
   box-shadow: rgba(100, 100, 100, 0.5) 0px 0px 10px 0px;
 }
 
-.cell__info__atom-num {
-  position: absolute;
-  transform: translate(0.3rem, 0.2rem);
-  font-size: calc(var(--cell-font-size) / 2);
+.atom .cell__info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   pointer-events: none;
 }
 
-.cell__info__symbol {
-  text-align: center;
-  line-height: var(--cell-height);
+.atom .cell__info__header {
+  width: 100%;
+  padding: 0 0.3rem;
+  font-size: calc(var(--cell-font-size) / 2);
+}
+
+.atom .cell__info__symbol {
+  margin-top: -0.3rem;
   font-size: var(--cell-font-size);
-  pointer-events: none;
+}
+
+.atom .cell__info__category::first-letter {
+  text-transform: capitalize;
 }
 
 /* Display */
@@ -239,48 +268,102 @@ tr td:nth-child(3) {
   );
   width: calc(var(--cell-width) * 10 + 1.8rem);
   height: calc(var(--cell-height) * 3 + 0.5rem);
-  margin: 0.2rem;
   z-index: 1;
-  transition: all 300ms ease;
+  display: grid;
+  grid-template-columns: 3fr 7fr;
+}
+
+.container__display .cell__info {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(var(--cell-height) * 0.1);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.container__display .cell__info__header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: calc(var(--cell-font-size) * 0.75);
+}
+
+.container__display .cell__info__symbol {
+  padding: calc(var(--cell-font-size) * 0.5) 0;
+  font-size: calc(var(--cell-font-size) * 3);
+  line-height: calc(var(--cell-font-size) * 3);
+  font-weight: 600;
+}
+
+.container__display .cell__info__name {
+  font-size: calc(var(--cell-font-size) * 0.75);
+}
+
+.container__display .cell__info__category {
+  font-size: calc(var(--cell-font-size) * 0.6);
+}
+
+.container__display .cell__info__category::first-letter {
+  text-transform: capitalize;
+}
+
+.display__list {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding-left: 0.4rem;
 }
 
 .display__item {
   white-space: pre;
-  margin: 0.5rem;
 }
 
-/* Aside */
+/* Filters */
 .container__filter {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  margin: 1rem;
-  min-width: 14rem;
-  user-select: none;
+  padding: 1rem;
+  margin-right: 1rem;
+  min-width: 15rem;
 }
 
 .button__filter {
   border-radius: 2px;
   padding: 0.2rem;
   width: 100%;
+  max-width: 20rem;
   height: 2rem;
   font-size: 1rem;
   text-transform: capitalize;
 }
 
-.button__filter--active {
-  scale: 1.05;
-  box-shadow: rgba(100, 100, 100, 0.5) 0px 0px 10px 0px;
+.button__filter::first-letter {
+  text-transform: capitalize;
 }
 
-/* Category Filter */
-.container__filter__category {
+.button__filter--active {
+  scale: 1.05;
+  font-weight: 600;
+}
+
+.container__filter__category,
+.container__filter__phase {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  width: 12rem;
+  width: 100%;
+}
+
+/* Category Filter */
+.category--all {
+  background-color: var(--color-default-cell-light);
 }
 
 .category--alkali-metal {
@@ -324,12 +407,8 @@ tr td:nth-child(3) {
 }
 
 /* Phase Filter */
-.container__filter__phase {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  width: 12rem;
+.phase--all {
+  box-shadow: inset 0px 0px 3px 3px var(--color-default-cell-light);
 }
 
 .phase__temp {
@@ -338,6 +417,8 @@ tr td:nth-child(3) {
 
 .phase__temp__input {
   width: 4.5rem;
+  border: none;
+  outline: none;
 }
 
 .phase--solid {
@@ -373,15 +454,15 @@ tr td:nth-child(3) {
 
 /* Footer */
 .footer {
-  position: absolute;
-  bottom: 0;
   background-color: var(--color-primary);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 10rem;
+  padding: 1rem 0;
+  height: 100%;
   width: 100%;
+  width: 100vw;
 }
 
 .footer__contact {
@@ -390,22 +471,10 @@ tr td:nth-child(3) {
 }
 
 @media screen and (max-width: 1200px) {
+  /* Periodic Table */
   .container__periodic-table {
     margin-left: 0;
     margin-right: 0;
-  }
-}
-
-@media screen and (max-width: 900px) {
-  :root {
-    /* Size */
-    --cell-height: 3.5rem;
-    --cell-width: 3rem;
-    --cell-font-size: 1.4rem;
-  }
-
-  .container__display {
-    font-size: 0.9rem;
   }
 
   /* Hide Filters */
@@ -414,6 +483,7 @@ tr td:nth-child(3) {
     border-radius: 100%;
     width: calc(var(--header-font-size) * 3);
     height: calc(var(--header-font-size) * 3);
+    box-shadow: rgba(100, 100, 100, 0.5) 0px 0px 10px 0px;
     margin: auto 0.5rem;
     text-align: center;
     font-size: calc(var(--header-font-size) * 1.5);
@@ -427,22 +497,44 @@ tr td:nth-child(3) {
 
   .container__filter {
     position: absolute;
-    transform: translate(-100%, -1rem);
-    background-color: var(--color-default-cell-light);
-    padding: 1rem 0;
+    background-color: var(--color-primary);
+    width: 100vw;
+    transform: translateY(-100%);
+    box-shadow: rgba(100, 100, 100, 0.5) 5px 5px 5px 0px;
     margin: 0;
     opacity: 0;
-    z-index: 2;
-    transition: all 300ms ease-out;
+    transition-property: opacity;
+    transition-duration: 200ms;
+    transition-timing-function: ease-in;
   }
 
   .container__filter--active {
-    transform: translateY(-1rem);
+    z-index: 2;
     opacity: 1;
+  }
+
+  .container__filter__category,
+  .container__filter__phase {
+    filter: brightness(0.9);
+  }
+}
+
+@media screen and (max-width: 900px) {
+  /* Resize periodic table and display */
+  :root {
+    /* Size */
+    --cell-height: 3.5rem;
+    --cell-width: 3rem;
+    --cell-font-size: 1.4rem;
+  }
+
+  .container__display {
+    font-size: 0.9rem;
   }
 }
 
 @media screen and (max-width: 600px) {
+  /* Resize periodic table and display */
   :root {
     /* Size */
     --cell-height: 3rem;
@@ -453,5 +545,9 @@ tr td:nth-child(3) {
 
   .container__display {
     font-size: 0.8rem;
+  }
+
+  .cell__info__category {
+    display: none;
   }
 }
