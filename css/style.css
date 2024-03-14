@@ -135,8 +135,11 @@ button:hover {
   display: none;
 }
 
-.header__title {
-  margin: 0.5rem 2rem;
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 1rem;
 }
 
 /* Container main footer */
