@@ -3,6 +3,7 @@
   /* App Colors */
   --color-primary: var(--color-misty-blue);
   --color-primary-variant: var(--color-blue-gray);
+  --color-primary-variant-blurred: rgb(82, 104, 143, 0.3);
   --color-accent: var(--color-cornflower);
   --color-text: var(--color-black);
 
@@ -44,6 +45,26 @@
   scroll-behavior: smooth;
   cursor: default;
   user-select: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-variant-blurred);
+  border-radius: 0.2rem;
+  transition: background-color 300ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-accent);
 }
 
 * {
