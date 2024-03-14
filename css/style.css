@@ -1,8 +1,9 @@
 /* Global */
 :root {
   /* App Colors */
-  --color-primary: var(--color-light-gray);
-  --color-accent: var(--color-blue);
+  --color-primary: var(--color-misty-blue);
+  --color-primary-variant: var(--color-blue-gray);
+  --color-accent: var(--color-cornflower);
   --color-text: var(--color-black);
 
   --color-default-cell-light: var(--color-light-gray);
@@ -25,9 +26,12 @@
   /* Colors */
   --color-white: #ffffff;
   --color-black: #050a13;
-  --color-blue: #03e8f9;
   --color-gray: #555555;
   --color-light-gray: #eeeeee;
+  --color-misty-gray: #bdc6d9;
+  --color-blue-gray: #52688f;
+  --color-misty-blue: #e3e7f1;
+  --color-cornflower: #7391c8;
 
   /* Size */
   --cell-height: 4rem;
@@ -54,6 +58,7 @@ body {
   min-height: 100vh;
   min-width: min-content;
   margin: 0;
+  color: var(--color-text);
 }
 
 h1,
@@ -72,7 +77,7 @@ ul {
 
 a {
   text-decoration: none;
-  color: var(--color-text);
+  color: var(--color-gray);
   font-weight: 600;
   transition: color 100ms ease-out;
 }
@@ -511,11 +516,6 @@ tr td:nth-child(3) {
   .container__filter--active {
     z-index: 2;
     opacity: 1;
-  }
-
-  .container__filter__category,
-  .container__filter__phase {
-    filter: brightness(0.9);
   }
 }
 
