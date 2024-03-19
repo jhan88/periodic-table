@@ -33,6 +33,7 @@
   --cell-height: 4rem;
   --cell-width: 3.5rem;
   --cell-font-size: 1.6rem;
+  --header-font-size: 1rem;
 
   /* Scroll */
   scroll-behavior: smooth;
@@ -94,7 +95,9 @@ button:hover {
   height: 4rem;
   display: flex;
   background-color: var(--color-primary);
-  z-index: 2;
+  box-shadow: rgba(100, 100, 100, 0.5) 0px 3px 3px 0px;
+  z-index: 3;
+  font-size: var(--header-font-size);
 }
 
 .header__title {
@@ -406,6 +409,7 @@ tr td:nth-child(3) {
     --cell-height: 3rem;
     --cell-width: 2.7rem;
     --cell-font-size: 1.2rem;
+    --header-font-size: 0.8rem;
   }
 
   .container__display {
