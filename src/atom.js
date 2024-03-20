@@ -1,10 +1,5 @@
 'use strict';
-
-const elements = await fetch(
-  'https://jhan88.github.io/periodic-table/src/elements.json'
-)
-  .then((res) => res.json())
-  .then((json) => json);
+import { elements } from './elements.js';
 
 export function atom(atomNum) {
   return elements.elements[atomNum - 1];
